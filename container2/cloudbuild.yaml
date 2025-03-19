@@ -39,7 +39,7 @@ steps:
 
   # Force the pods to restart with the new image (using the unique tag)
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['set', 'image', 'deployment/container2', 'container2=us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:$SHORT_SHA']
+    args: ['set', 'image', 'deployment/c2-deployment', 'container2=us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:$SHORT_SHA']
 
 images:
   - 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:$SHORT_SHA'
