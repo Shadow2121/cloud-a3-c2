@@ -22,7 +22,7 @@ app.post('/process', async (req, res) => {
     try {
         const { isValid, parsedData } = await processCSVFile(filePath);
 
-        console.log("25");
+        console.log("25 ");
         if (!isValid) {
             return res.status(400).json({
                 file,
