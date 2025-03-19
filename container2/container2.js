@@ -17,7 +17,7 @@ app.post('/process', async (req, res) => {
 
     const extension = path.extname(file).toLowerCase();
     const filePath = path.join(FILE_DIRECTORY, file);
-    console.log("File Path 20:  ", filePath);
+    console.log("File Path 20: ", filePath);
 
     try {
         const { isValid, parsedData } = await processCSVFile(filePath);
