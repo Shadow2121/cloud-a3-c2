@@ -1,5 +1,5 @@
 steps:
-  # Debugging Step
+  # Debugging Step: List directories and check if Dockerfile is present
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'debug-ls'
     entrypoint: 'bash'
@@ -13,13 +13,15 @@ steps:
         echo "Contents of container2 directory:"
         ls -la ./container2
   
+  # Build Docker Image with a unique tag
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2', './container2']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:$SHORT_SHA', './container2']
 
+  # Push Docker Image to the registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2']
+    args: ['push', 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:$SHORT_SHA']
 
-  # Authenticate with Kubernetes
+  # Authenticate with Kubernetes cluster
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'container'
@@ -31,15 +33,16 @@ steps:
       - '--project'
       - 'cloud-assignment3-454119'
 
-  # Deploy to Kubernetes
+  # Apply Kubernetes deployment from YAML file
   - name: 'gcr.io/cloud-builders/kubectl'
     args: ['apply', '-f', 'k8s/deployment.yaml']
 
+  # Force the pods to restart with the new image (using the unique tag)
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['set', 'image', 'deployment/container2', 'container2=us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:latest']
+    args: ['set', 'image', 'deployment/container2', 'container2=us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:$SHORT_SHA']
 
 images:
-  - 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2'
+  - 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2:$SHORT_SHA'
 
 options:
   env:
