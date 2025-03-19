@@ -2,21 +2,21 @@ steps:
   # Debugging Step
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'debug-ls'
-    entrypoint: 'powershell'
+    entrypoint: 'bash'
     args:
-      - '-Command'
+      - '-c'
       - |
-        Write-Host "Current directory:"
-        Get-Location
-        Write-Host "Contents of current directory:"
-        Get-ChildItem -Path . -Force
-        Write-Host "Contents of container2 directory:"
-        Get-ChildItem -Path ./container2 -Force
+        echo "Current directory:"
+        pwd
+        echo "Contents of current directory:"
+        ls -la
+        echo "Contents of container2 directory:"
+        ls -la ./container2
   
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2', './container2']
 
-  - name: 'gce.io/cloud-builders/docker'
+  - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2']
 
   # Authenticate with Kubernetes
@@ -27,9 +27,9 @@ steps:
       - 'get-credentials'
       - 'cloud-a3'
       - '--zone'
-      - 'us-central1-a'
+      - 'us-central1-c'
       - '--project'
-      - 'cloud-a3-454003'
+      - 'cloud-assignment3-454119'
 
   # Deploy to Kubernetes
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -40,6 +40,6 @@ images:
 
 options:
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
     - 'CLOUDSDK_CONTAINER_CLUSTER=cloud-a3'
   logging: CLOUD_LOGGING_ONLY
