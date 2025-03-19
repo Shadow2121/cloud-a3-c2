@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c2-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c2
+  template:
+    metadata:
+      labels:
+        app: c2
+    spec:
+      containers:
+      - name: container2
+        image: us-central1-docker.pkg.dev/cloud-assignment3-454119/cloud-a3/shadow1069/cloud-container2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: shared-pvc
+          mountPath: /mihir_PV_dir
+      volumes:
+      - name: shared-pvc
+        persistentVolumeClaim:
+          claimName: shared-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c2-service
+spec:
+  selector:
+    app: c2
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
